@@ -12,7 +12,7 @@ from tkinter import filedialog, messagebox, ttk
 class UP2GeneratorGui:
     """Main GUI application for UP2 Generator."""
 
-    EXE_PATH = r"Path_to\Frameprocessor.exe"
+    EXE_PATH = r"C:\direction_electron\Research\Frameprocessor.exe"
 
     # ── Option maps ──────────────────────────────────────────────────────────
     CAMERA_OPTIONS = {
