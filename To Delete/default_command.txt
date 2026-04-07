@@ -1,0 +1,1 @@
+Path_to\Frameprocessor.exe -camera 8 -outputup2 -moviesumframes 1 -singlethread -fliphorizontal -flipvertical -gainreference none -binning 2 -scanning 392 392 file_path.mrc

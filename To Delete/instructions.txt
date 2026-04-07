@@ -1,0 +1,15 @@
+I need you to make a GUI for me. Its core functionality is that it takes in a .MRC file and output a .UP2 file.
+This core functionality is already implemented in a .exe file.
+However, I just need you to construct the terminal command to call it.
+Please construct a GUI with dropdown options for each input.
+All of the possible inputs can be found in possible_inputs.txt.
+The GUI should autopopulate in the same format as default_command.txt with the exception of not including the file paths.
+
+The .exe file should be a hardcoded path - this path should display in the GUI but not be editable. (for now just leave it as "Path_to\Frameprocessor.exe")
+The exe file will atuogenerate the output UP2 names in the same directory as the MRC file
+Have dropdown menus when it makes sense. Have file path loaders where it makes sense. Have Number inputs where it makes sense.
+
+In the main section of the GUI, only have options to change the options that are included in the default_command.txt.
+However, have an advanced settings section that allows for manipulation of the rest of the flags.
+
+Have the gui format follow example_gui.py.

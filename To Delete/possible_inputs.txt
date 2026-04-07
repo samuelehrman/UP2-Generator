@@ -1,0 +1,100 @@
+Usage: FrameProcessor.exe [inputfile1] <inputfile2>
+
+Input Options:
+  -first <int>                                  The inclusive index of the first input frame to process (the first frame is frame 0). If this is negative, then zero frames will be written to the output up to frame 0.
+  -last <int>                                   The exclusive index of the last input frame to process (the first frame is frame 0). If this is negative, then this is the final frame minus one less than this the positive of this value.
+  -camera <int>                                 Type of camera (0=DE12, 1=DirectView, 2=DE20, 3=DE16, 4=DE64, 5=DESEMCam, 6=LV16, 7=Vision, 8=Celeritas, 9=Apollo, 10=Survey).
+  -frametopology <int>                          Input frame topology (0=Single (default), 1=Top/Bottom, 2=Left/Right).
+  -framesperbuffer <int>                        Number of frames per buffer in the input file.
+  -hardwarebinning                              Indicates that hardware binning was enabled.
+  -hardwareroioffset <x> <y>                    The hardware ROI offset applied during acquisition.
+  -globalshutter                                Indicates that global shutter was enabled.
+  -offchipcds                                   Indicates that offchip CDS was enabled.
+  -hdrlevels <int>                              Number of HDR levels that were enabled (default=1).
+  -okra <int>                                   Enable (1), disable (0), or use default (-1) OKRA correction.
+  -metadataxml <string>                         Filename of the metadata XML file (for StreamPix).
+
+Acquisition Options:
+  -acquisitiontype <int>                        Type of acquisition (0=Data (default), 1=Dark Reference, 2=Gain Reference).
+  -aduperevent <float>                          Average event intensity (used for scaling integrating and counting modes in HDR counting).
+
+Thresholding Options:
+  -thresholdingtype <int>                       Type of thresholding to apply (0=Disabled (default), 1=Low to Zero, 2=Adapative to Zero, 3=Adaptive Subtraction).
+  -adaptivethresholding <int>                   Use adaptive thresholding with the specified calculation (0=Mean (default), 1=Median, 2=Quartile).
+  -threshold <float>                            Pixel value threshold to apply to non-HDR or HDR level 0 frames.
+
+HDR Options:
+  -thresholdhdr1 <float>                        Pixel value threshold to apply to HDR level 1 frames.
+  -thresholdhdr2 <float>                        Pixel value threshold to apply to HDR level 2 frames.
+  -hdrmergemin0 <float>                         Pixel value for HDR level 0 at which to start blending with HDR level 1.
+  -hdrmergemax0 <float>                         Pixel value for HDR level 0 at which to stop blending with HDR level 1.
+  -hdrmergemin1 <float>                         Pixel value for HDR level 1 at which to start blending with HDR level 2.
+  -hdrmergemax1 <float>                         Pixel value for HDR level 1 at which to stop blending with HDR level 2.
+  -hdrgainfactor1 <float>                       Gain factor to apply to HDR level 1.
+  -hdrgainfactor2 <float>                       Gain factor to apply to HDR level 2.
+
+Event Counting Options:
+  -counting <int>                               Perform event counting (0=Disabled (default), 1=Maxima, 2=Centroid, 3=Binary Centroid, 4=HDR Maxima, 5=HDR Centroid, 6=HDR Binary Centroid, 7=DEEP, 8=HDR DEEP, 9=EER).
+  -eventthresholdmin <float>                       Total event intensity threshold to apply for event counting (minimum).
+  -eventthresholdmax <float>                       Total event intensity threshold to apply for event counting (max).
+
+Processing Options:
+  -processframesperbuffer <int>                 Process multiple frames per buffer (the specified number) when the input framesperbuffer = 1.
+  -processoutputbuffersize <int>                Size of the movie output buffer in gigabytes (default = 8).
+  -simulateinput                                Use only the first input frame over and over again to test processing speed.
+  -singlethread                                 Do not use multithreading.
+
+Dark Reference Options:
+  -darkreference <filename>                     Dark reference for non-HDR or HDR level 0 in TIFF or MRC format.
+  -darkreferencehdr1 <filename>                 Dark reference for HDR level 1 in TIFF or MRC format.
+  -darkreferencehdr2 <filename>                 Dark reference for HDR level 2 in TIFF or MRC format.
+  -darkreferenceoffchipcds <filename>           Dark reference for offchip CDS in TIFF or MRC format.
+
+Gain Reference Options:
+  -gainreference <filename>                     Gain reference for non-HDR or HDR level 0 for integrating mode in TIFF or MRC format.
+  -gainreferencehdr1 <filename>                 Gain reference for HDR level 1 integrating mode in TIFF or MRC format.
+  -gainreferencehdr2 <filename>                 Gain reference for HDR level 2 integrating mode in TIFF or MRC format.
+  -gainreferencecounting <filename>             Gain reference to apply before counting mode in TIFF or MRC format.
+
+Bad Pixel Options:
+  -badpixelsxml <filename>                      Bad pixels XML file.
+  -badpixelsoutput                              Output the bad pixels mask in MRC format.
+
+Output Options:
+  -binning <int>                                Amount of software binning to apply.
+  -binningmethod <int>                          Method of software binning (0=Sample, 1=Sum (default), 2=Average, 3=Fourier Crop).
+  -fliphorizontal                               Flip the output horizontally.
+  -flipvertical                                 Flip the output vertically.
+  -rotation <int>                               Rotate the output counterclockwise (-1) or clockwise (1).
+  -roi <xoffset> <yoffset> <xsize> <ysize>      Software region-of-interest to apply to the output.
+  -multiply <float>                             Multiply each output image by this scaling factor.
+
+4D Options:
+  -scanning <xsize> <ysize>                     Scanning dimensions for 4D datasets.
+  -scanningcroptop <int>                        Number of scanning rows in the 4D dataset to skip at the top.
+  -scanningcropbottom <int>                     Number of scanning rows in the 4D dataset to skip at the bottom.
+  -scanningcropleft <int>                       Number of scanning rows in the 4D dataset to skip at the left.
+  -scanningcropright <int>                      Number of scanning rows in the 4D dataset to skip at the right.
+  -scanningvacuumref <xfilename> <yfilename>    Vacuum reference filenames for the x and y shifts.
+
+Virtual Image Options:
+  -virtualimage0 <method>                       Method for virtual image 0 (using the entire frame). Method can be 1=sum, 2=centroid amplitude, 3=centroid angle, 4=centroid X, 5=centroid Y.
+  -virtualimage1 <maskfilename> <method>        Mask for virtual image 1 in TIFF or MRC format. Method can be 1=sum, 2=centroid amplitude, 3=centroid angle, 4=centroid X, 5=centroid Y.
+  -virtualimage2 <maskfilename> <method>        Mask for virtual image 2 in TIFF or MRC format. Method can be 1=sum, 2=centroid amplitude, 3=centroid angle, 4=centroid X, 5=centroid Y.
+  -virtualimage3 <maskfilename> <method>        Mask for virtual image 3 in TIFF or MRC format. Method can be 1=sum, 2=centroid amplitude, 3=centroid angle, 4=centroid X, 5=centroid Y.
+  -virtualimage4 <maskfilename> <method>        Mask for virtual image 4 in TIFF or MRC format. Method can be 1=sum, 2=centroid amplitude, 3=centroid angle, 4=centroid X, 5=centroid Y.
+
+File Output Options:
+  -outputtiff                                   Output TIFF files instead of MRC.
+  -outputlzw                                    Output the movie in TIFF LZW format instead of MRC or TIFF.
+  -outputde5                                    Output the movie in DE5 format instead of MRC or TIFF.
+  -outputup2                                    Output the movie in UP2 format instead of MRC or TIFF.
+  -moviesumframes <int>                         Save the movie with the specified number of frames to sum for each movie image.  -moviebitrate <int>                           Bitrate for movie output (8-bit unsigned integer, 16-bit unsigned integer (default), or 32-bit floating point).
+  -movieuncorrected                             Do not perform gain correction of movie output.
+  -totalintegrated                              Save the total sum of all integrating-mode frames.
+  -totalcounted                                 Save the total sum of all counting-mode frames.
+  -totalbitrate <int>                           Bitrate for total sum output (8-bit unsigned integer, 16-bit unsigned integer, or 32-bit floating point (default)).
+  -intensityhistogram <min> <max> <count>       Calculate the event intensity histogram from <min> to <max> with a total of <count> bins. This only works with centroiding event counting.  -intensityhistogramroi <xo> <yo> <xs> <ys>    Region-of-interest for calculating the intensity histogram.
+Processing Options:
+  -quiet                                        Do not show progress while processing frames.
+  -silent                                       Do not show any progress messages.
