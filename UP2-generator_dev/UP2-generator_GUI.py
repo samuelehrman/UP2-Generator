@@ -2,6 +2,8 @@
 GUI for UP2 Generator — converts .MRC files to .UP2 using FrameProcessor.exe.
 """
 
+# GUI template modelled from James Lamb GND GUI: https://github.com/PollockGroup/TriBeam_GND
+
 import os
 import subprocess
 import threading
