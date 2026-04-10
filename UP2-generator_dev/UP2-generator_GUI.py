@@ -5,6 +5,7 @@ GUI for UP2 Generator — converts .MRC files to .UP2 using FrameProcessor.exe.
 # GUI template modelled from James Lamb GND GUI: https://github.com/PollockGroup/TriBeam_GND
 
 import os
+import datetime
 import subprocess
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
@@ -974,7 +975,7 @@ class UP2GeneratorGui:
 
     def _build_command(self):
         """Assemble and return the full command string."""
-        parts = [f'"{self.EXE_PATH}"']
+        parts = [f'{self.EXE_PATH}']
 
         cam_val = self.CAMERA_OPTIONS.get(self.camera.get(), 8)
         parts.append(f"-camera {cam_val}")
@@ -1221,21 +1222,49 @@ class UP2GeneratorGui:
 
     def _run(self):
         mrc = self.mrc_file_path.get().strip()
+        self._log(f"[RUN] MRC path from field: '{mrc}'")
+
         if not mrc:
+            self._log("[ERROR] No MRC file selected.")
             messagebox.showerror("Error", "Please select an input MRC file.")
             return
-        if not os.path.exists(mrc):
-            messagebox.showerror("Error", f"Input file does not exist:\n{mrc}")
+
+        abs_mrc = os.path.abspath(mrc)
+        self._log(f"[RUN] Resolved absolute path: '{abs_mrc}'")
+        self._log(f"[RUN] File exists: {os.path.exists(abs_mrc)}")
+
+        if not os.path.exists(abs_mrc):
+            self._log("[WARNING] Input file not found — attempting to run anyway.")
+
+        mrc_dir = os.path.dirname(abs_mrc)
+        self._log(f"[RUN] Working directory: '{mrc_dir}'")
+        self._log(f"[RUN] EXE exists: {os.path.exists(self.EXE_PATH)}")
+
+        cmd = self._build_command()
+        self._log(f"[RUN] Full command: {cmd}")
+        self._log("[RUN] Launching cmd window...")
+
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        bat_path = os.path.join(mrc_dir, f"_run_up2_{timestamp}.bat")
+        try:
+            with open(bat_path, "w") as f:
+                f.write(f'cd /d "{mrc_dir}"\n')
+                f.write(f"{cmd}\n")
+            self._log(f"[RUN] Wrote temp batch file: '{bat_path}'")
+        except Exception as e:
+            self._log(f"[ERROR] Could not write batch file: {e}")
+            messagebox.showerror("Error", f"Could not write batch file:\n{e}")
             return
 
-        mrc_dir = os.path.dirname(os.path.abspath(mrc))
-        cmd = self._build_command()
-        self._log(f"Opening terminal in: {mrc_dir}")
-        self._log(f"Command: {cmd}")
-        subprocess.Popen(
-            ["cmd", "/K", f'cd /d "{mrc_dir}" && {cmd}'],
-            creationflags=subprocess.CREATE_NEW_CONSOLE,
-        )
+        try:
+            subprocess.Popen(
+                ["cmd", "/K", bat_path],
+                creationflags=subprocess.CREATE_NEW_CONSOLE,
+            )
+            self._log("[RUN] Process launched successfully.")
+        except Exception as e:
+            self._log(f"[ERROR] Failed to launch process: {e}")
+            messagebox.showerror("Error", f"Failed to launch process:\n{e}")
 
     # ── Logging ───────────────────────────────────────────────────────────────
 
