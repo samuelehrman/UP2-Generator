@@ -6,7 +6,6 @@ GUI for UP2 Generator — converts .MRC files to .UP2 using FrameProcessor.exe.
 
 import os
 import subprocess
-import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
@@ -14,7 +13,7 @@ from tkinter import filedialog, messagebox, ttk
 class UP2GeneratorGui:
     """Main GUI application for UP2 Generator."""
 
-    EXE_PATH = r"C:\direction_electron\Research\Frameprocessor.exe"
+    EXE_PATH = r"C:\direct_electron\Research\FrameProcessor.exe"
 
     # ── Option maps ──────────────────────────────────────────────────────────
     CAMERA_OPTIONS = {
@@ -1176,10 +1175,10 @@ class UP2GeneratorGui:
         if self.adv_silent.get():
             parts.append("-silent")
 
-        # Input file — always last
+        # Input file — always last (filename only; command is run from the MRC directory)
         mrc = self.mrc_file_path.get().strip()
         if mrc:
-            parts.append(f'"{mrc}"')
+            parts.append(os.path.basename(mrc))
 
         return " ".join(parts)
 
@@ -1229,31 +1228,14 @@ class UP2GeneratorGui:
             messagebox.showerror("Error", f"Input file does not exist:\n{mrc}")
             return
 
+        mrc_dir = os.path.dirname(os.path.abspath(mrc))
         cmd = self._build_command()
-        self._log(f"Running: {cmd}")
-        self.run_button.config(state="disabled")
-        threading.Thread(target=self._run_worker, args=(cmd,), daemon=True).start()
-
-    def _run_worker(self, cmd):
-        try:
-            proc = subprocess.Popen(
-                cmd,
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-            )
-            for line in proc.stdout:
-                self._log_threadsafe(line.rstrip())
-            proc.wait()
-            if proc.returncode == 0:
-                self._log_threadsafe("Done.")
-            else:
-                self._log_threadsafe(f"Process exited with code {proc.returncode}.")
-        except Exception as exc:
-            self._log_threadsafe(f"Error: {exc}")
-        finally:
-            self.root.after(0, lambda: self.run_button.config(state="normal"))
+        self._log(f"Opening terminal in: {mrc_dir}")
+        self._log(f"Command: {cmd}")
+        subprocess.Popen(
+            ["cmd", "/K", f'cd /d "{mrc_dir}" && {cmd}'],
+            creationflags=subprocess.CREATE_NEW_CONSOLE,
+        )
 
     # ── Logging ───────────────────────────────────────────────────────────────
 
